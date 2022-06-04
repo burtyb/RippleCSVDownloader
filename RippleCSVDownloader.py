@@ -1,4 +1,10 @@
-# 
+#
+# RippleCSVDownloader
+# https://github.com/burtyb/RippleCSVDownloader
+#
+# (c) 8086 Consultancy 2022
+#
+ 
 from datetime import datetime,timedelta
 #from pprint import pprint
 
