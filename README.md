@@ -34,7 +34,7 @@ The CSV files are fully rewritten if any changes are detected.
 
 I call "Today" 24:00 tomorrows 00:00 in the dates saved to the CSV for easlier manipulation.
 
-You can never retrieve the last hours (24:00/00:00) non-forecasted stats for "Today" - it could probably be calculated once the daily stats include that day but as historical daily stats change it would need to be checked/recalculated frequently (I've made RippleEnergy are aware you can't get the last hour stats so at some point they might be available via a "Yesterday" hourly chart or something).
+You can never retrieve the last hours (24:00/00:00) non-forecasted stats for "Today" - it could probably be calculated once the daily stats include that day but as historical daily stats change it would need to be checked/recalculated frequently (RippleEnergy are aware you can't get the last hour stats so at some point they might be available via a "Yesterday" hourly chart or something).
 
 Historical entries do change so the CSV files are fully rewritten (not appended to) every time an entry is added or updated.
 
