@@ -72,7 +72,7 @@ def main():
 			hourlyforecastcsvfilename = csvfileprefix+name.replace(' ', '_')+'-forecast-hourly.csv'
 			hourlyforecastcsvfilenamebak = 'bak/'+csvfileprefix+name.replace(' ', '_')+'-hourlyforecast-'+datetime.now().strftime('%Y%m%d-%H%M%S')+'.csv'
 
-			# Only generate files for operational fams
+			# Only generate files for operational farms
 			if status == 'OPERATIONAL':
 				print("Parsing data for", name)
 
