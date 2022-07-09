@@ -25,6 +25,7 @@ def main():
 	createbackup = getattr(config, 'createbackup', False)
 	testdata = getattr(config, 'testdata', None)
 	outputtestdata = getattr(config, 'outputtestdata', False)
+	verbose = getattr(config, 'verbose', 3)
 
 	authurl = 'https://rippleenergy.com/graphql?TokenAuth'
 	statsurl = 'https://rippleenergy.com/graphql?WindFarmGenerationData'
@@ -74,7 +75,7 @@ def main():
 
 			# Only generate files for operational farms
 			if status == 'OPERATIONAL':
-				print("Parsing data for", name)
+				if verbose > 0: print("Parsing data for", name)
 
 				dailystats = {}
 				hourlystats = {}
@@ -133,10 +134,11 @@ def main():
 							if today+'-'+datestring in forecaststats.keys():
 								# Is the forecast different vs the CSV data?
 								if forecaststats[today+'-'+datestring] != [ today, datestring, str(kwh), str(savings) ]:
-									print(" Forecast data changed", forecaststats[today+'-'+datestring], "to", [ today, datestring, str(kwh), str(savings) ] )
+									if verbose & 1: print(" Forecast data changed", forecaststats[today+'-'+datestring], "to", [ today, datestring, str(kwh), str(savings) ] )
 									forecastchanged = True
 							else:
 								# No old data for this entry so it's new
+								if verbose & 2: print(" Daily forcast data", [ today, datestring, str(kwh), str(savings) ] )
 								forecastchanged = True
 
 							if forecastchanged:
@@ -164,10 +166,11 @@ def main():
 								if datestring in hourlyforecaststats.keys():
 									# Is the forecast data different vs the CSV data?
 									if hourlyforecaststats[datestring] != [ datestring, str(kwh), str(savings) ]:
-										print(" Hourly forecast data changed", hourlyforecaststats[datestring], "to", [ datestring, str(kwh), str(savings) ] )
+										if verbose & 1: print(" Hourly forecast data changed", hourlyforecaststats[datestring], "to", [ datestring, str(kwh), str(savings) ] )
 										hourlyforecastchanged = True
 								else:
 									# No old data for this entry so it's new
+									if verbose & 2: print(" Hourly forecast data ", [ datestring, str(kwh), str(savings) ] )
 									hourlyforecastchanged = True
 
 								if hourlyforecastchanged:
@@ -179,10 +182,11 @@ def main():
 							if datestring in hourlystats.keys():
 								# Is the forecast/actual data different vs the CSV data?
 								if hourlystats[datestring] != [ datestring, str(kwh), str(savings), forecast ]:
-									print(" Hourly data changed", hourlystats[datestring], "to", [ datestring, str(kwh), str(savings), forecast ] )
+									if verbose & 1: print(" Hourly data changed", hourlystats[datestring], "to", [ datestring, str(kwh), str(savings), forecast ] )
 									hourlychanged = True
 							else:
 								# No old data for this entry so it's new
+								if verbose & 2: print(" Hourly data ", [ datestring, str(kwh), str(savings), forecast ] )
 								hourlychanged = True
 
 							if hourlychanged:
@@ -199,9 +203,10 @@ def main():
 							if datestring in dailystats.keys():
 								# Is the new data different vs the CSV data?
 								if dailystats[datestring] != [ datestring, str(kwh), str(savings) ]:
-									print(" Daily data changed", dailystats[datestring], "to", [ datestring, str(kwh), str(savings) ] )
+									if verbose & 1: print(" Daily data changed", dailystats[datestring], "to", [ datestring, str(kwh), str(savings) ] )
 									dailychanged = True
 							else:
+								if verbose & 2: print(" Daily data ", [ datestring, str(kwh), str(savings) ] )
 								dailychanged = True
 
 							if dailychanged:
@@ -246,9 +251,9 @@ def main():
 						for k,entry in sorted(dailystats.items()):
 							writer.writerow(entry)
 
-				print("Done.")
+				if verbose > 0: print("Done.")
 			else:
-				print("Skipping "+name+" (Status:"+status+")")
+				if verbose > 0: print("Skipping "+name+" (Status:"+status+")")
 
 if __name__ == '__main__':
 	main()

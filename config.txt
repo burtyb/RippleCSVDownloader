@@ -12,6 +12,13 @@ csvfileprefix = 'RippleEnergy-'
 # Copies previous csv file into bak/ directory
 createbackup = True
 
+# What to output
+# 0 = Don't output anything (unless it errors) 
+# For other levels they can be added together to turn on/off different levels (bitmask)
+# 1 = Show Projects and changed data (default)
+# 2 = Show Projects and new/changed data
+verbose = 3 
+
 #
 # You probably don't need to alter the test settings below
 #

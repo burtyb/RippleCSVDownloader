@@ -6,7 +6,9 @@ The Python3 script requires "requests" which you may need to install first using
 
 `sudo apt update&&sudo apt install python3-requests` or `pip3 install requests` for example.
 
-Your username/password can then be set in the config.py file.
+If installing for the first time copy config.txt to config.py and edit to set your username/password.
+
+If upgrading compare config.py with config.txt and add any new values to config.py you want to change.
 
 ## Running
 
