@@ -17,7 +17,6 @@ import time
 
 import config
 
-
 def main():
 	username = getattr(config, 'username', 'unconfigured')
 	password = getattr(config, 'password', 'unconfigured')
@@ -34,6 +33,8 @@ def main():
 
 	statsdata = "{\"operationName\":\"WindFarmGenerationData\",\"variables\":{},\"query\":\"query WindFarmGenerationData {\\n  member {\\n    id\\n    memberships {\\n      id\\n      capacity\\n      coop {\\n        id\\n        firstYearEstimatedBillSavingsPerWattHour\\n        currency {\\n          precision\\n          code\\n          symbol\\n          __typename\\n        }\\n        generationfarm {\\n          id\\n          name\\n          capacity\\n          operationalStatus\\n          generationData {\\n            title\\n            dataSet {\\n              netPowerOutputKwh\\n              dateTime\\n              isForecastData\\n              savingsForPeriod\\n              __typename\\n            }\\n            __typename\\n          }\\n          __typename\\n        }\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"}"
 
+	newsdata = "{\"operationName\":\"GetNews\",\"variables\":{},\"query\":\"query GetNews {\\n  getNews {\\n    news {\\n      id\\n      title\\n      body\\n      publishDate\\n      hidden\\n      newsDocuments {\\n        id\\n        createdAt\\n        category\\n        file\\n        documentUrl\\n        __typename\\n      }\\n      __typename\\n    }\\n    errors {\\n      message\\n      code\\n      __typename\\n    }\\n    __typename\\n  }\\n}\"}"
+
 	headers = {
 		'Content-type': 'application/json', 'Accept': 'text/plain',
 		'User-Agent': 'RippleCSVDownloader/0.1 (https://github.com/burtyb/RippleCSVDownloader)',
@@ -44,14 +45,23 @@ def main():
 		with requests.session() as session:
 			# Login
 			response = session.post(authurl, data=authdata, headers=headers)
-			# Gets stats
+			# Get stats
 			response = session.post(statsurl, data=statsdata, headers=headers)
-
 			out = json.loads(response.text)
 
 			# Display returned string if requested
 			if outputtestdata:
+				print("Stats")
 				print(response.text)
+
+			# Get news
+#			response = session.post(statsurl, data=newsdata, headers=headers)
+#			news = json.loads(response.text)
+#			# Display returned string if requested
+#			if outputtestdata:
+#				print("News")
+#				print(response.text)
+
 	else:
 		# Load output from test data string
 		out = json.loads(testdata)
@@ -121,10 +131,10 @@ def main():
 						initial = True
 						for dataSet in generationData['dataSet']:
 							# We don't need the time portion as the forecast is for the whole day
-							datestring = datetime.strptime(dataSet['dateTime'][0:10],'%Y-%m-%d').strftime('%Y-%m-%d')
+							datestring = datetime.strptime(dataSet['dateTime'][0:10],'%d/%m/%Y').strftime('%Y-%m-%d')
 							# If it's the first entry calculate todays date 
 							if initial:
-								today = datetime.strptime(dataSet['dateTime'][0:10],'%Y-%m-%d')-timedelta(days=1)
+								today = datetime.strptime(dataSet['dateTime'][0:10],'%d/%m/%Y')-timedelta(days=1)
 								today = today.strftime('%Y-%m-%d')
 								initial = False
 							kwh = dataSet['netPowerOutputKwh']
@@ -148,11 +158,14 @@ def main():
 						for dataSet in generationData['dataSet']:
 							# Parse date - for some reason it's in different formats depending on being forecast or actual
 							try:
-								# Forecast date/time have 'T' and 'z' which we don't want
-								datestring = datetime.strptime(dataSet['dateTime'].replace('T',' ').replace('z',''), '%Y-%m-%d %H:%M:%S')
+								datestring = datetime.strptime(dataSet['dateTime'], '%d/%m/%Y %H:%M:%S')
 							except:
-								# Doesn't parse "24:00:00" but it's the day after
-								datestring = datetime.strptime(dataSet['dateTime'][0:10],'%Y-%m-%d')+timedelta(days=1)
+								try:
+									datestring = datetime.strptime(dataSet['dateTime'].replace('T',' ').replace('z',''), '%Y-%m-%d %H:%M:%S')
+								except:
+									# Doesn't parse "24:00:00" but it's the day after and is always be forecast
+									datestring = datetime.strptime(dataSet['dateTime'][0:10],'%Y-%m-%d')+timedelta(days=1)
+
 							# Format the date/time how we want to store it in the CSV
 							datestring = datestring.strftime('%Y-%m-%d %H:%M:%S')
 							forecast = dataSet['isForecastData']
@@ -194,7 +207,7 @@ def main():
 								
 					if generationData['title'] == "LAST_30_DAYS":
 						for dataSet in generationData['dataSet']:
-							datestring = datetime.strptime(dataSet['dateTime'], '%d-%m-%Y %H:%M:%S').strftime('%Y-%m-%d')
+							datestring = datetime.strptime(dataSet['dateTime'], '%d/%m/%Y %H:%M:%S').strftime('%Y-%m-%d')
 							forecast = dataSet['isForecastData']
 							kwh = dataSet['netPowerOutputKwh']
 							savings = dataSet['savingsForPeriod']
@@ -206,7 +219,7 @@ def main():
 									if verbose & 1: print(" Daily data changed", dailystats[datestring], "to", [ datestring, str(kwh), str(savings) ] )
 									dailychanged = True
 							else:
-								if verbose & 2: print(" Daily data ", [ datestring, str(kwh), str(savings) ] )
+								if verbose & 2: print(" Daily data", [ datestring, str(kwh), str(savings) ] )
 								dailychanged = True
 
 							if dailychanged:
