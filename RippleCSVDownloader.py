@@ -127,7 +127,7 @@ def main():
 
 				# Loop through each type of generationData
 				for generationData in membership['coop']['generationfarm']['generationData']:
-					if generationData['title'] == "NEXT_4_DAYS":
+					if (generationData['title'] == "NEXT_14_DAYS") or (generationData['title'] == "NEXT_14_DAYS"):
 						initial = True
 						for dataSet in generationData['dataSet']:
 							# We don't need the time portion as the forecast is for the whole day

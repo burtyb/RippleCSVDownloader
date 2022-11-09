@@ -18,7 +18,7 @@ If upgrading compare config.py with config.txt and add any new values to config.
 
 By default the CSV files are named as below for Graig Fatha and have the following format.
 
-RippleEnergy-Graig_Fatha-forecast.csv - From "Next 4 days" chart
+RippleEnergy-Graig_Fatha-forecast.csv - From "Next 14 days" chart (or "Next 4 days")
 > \<date forecast made>,\<forecasted date>,\<kWh>,\<savings>
 
 RippleEnergy-Graig_Fatha-hourly.csv - From "Today chart" includes both forecast which is replaced by actal data as it's updated
@@ -31,6 +31,10 @@ RippleEnergy-Graig_Fatha-daily.csv - From "Last 30 days" chart
 > \<date>,\<kWh>,\<savings>
 
 The CSV files are fully rewritten if any changes are detected.
+
+## Report
+
+There is also a report-monthly-savings.py script which adds up the daily savings by Month (uses hourly data for the current day).
 
 ## Things to note
 
