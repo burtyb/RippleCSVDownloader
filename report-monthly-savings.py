@@ -60,15 +60,16 @@ def main():
 	print("Monthly Savings")
 	for k in sorted(monthdata):
 		if partialday != 0 and nextym == k:
-			print("{} {:.2f}".format(str(k)[0:4]+'-'+str(k)[4:6],((monthdata[k]+partialday)/100) ))
+			print("{} {:.2f} ({:.2f}+{:.2f})".format(str(k)[0:4]+'-'+str(k)[4:6],((monthdata[k]+partialday)/100), monthdata[k]/100, partialday/100 ))
 			total = total + round((monthdata[k]+partialday)/100,2)
 			partialday = 0
 		else:
 			print("{} {:.2f}".format(str(k)[0:4]+'-'+str(k)[4:6],(monthdata[k]/100) ))
 			total = total + round(monthdata[k]/100,2)
 
+	# First day of month so we only have partial day data
 	if partialday != 0:
-		print("{} {:.2f}".format(nextday[0:7],partialday/100) )
+		print("{} {:.2f} (0+{:.2f})".format(nextday[0:7],partialday/100,partialday/100) )
 		total = total + round(partialday/100,2)
 
 	print("Total   {:.2f}".format(total) )
