@@ -1,3 +1,6 @@
+# Archived
+Please use the [official Ripple API](https://community.rippleenergy.com/new-feature-requests-yyqtfatb/post/ripple-api-yH0cTzuQ4GJMaYV) instead of this.
+
 # RippleCSVDownloader
 
 A simple tool which logs into https://rippleenergy.com/ and saves your actual/forecast data as CSV files.
